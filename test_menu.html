@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Menu</title>
+</head>
+<body>
+    <h1>Test del Menu</h1>
+    <p>Abre la consola del navegador y navega a:</p>
+    <a href="http://localhost:5175/menu/financiero/base" target="_blank">
+        http://localhost:5175/menu/financiero/base
+    </a>
+    
+    <iframe src="http://localhost:5175/menu/financiero/base" width="100%" height="600px"></iframe>
+    
+    <script>
+        console.log("Página de test cargada");
+        
+        // Abrir directamente la URL
+        setTimeout(() => {
+            window.open("http://localhost:5175/menu/financiero/base", "_blank");
+        }, 1000);
+    </script>
+</body>
+</html>

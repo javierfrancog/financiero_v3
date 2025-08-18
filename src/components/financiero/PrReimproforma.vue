@@ -1,0 +1,386 @@
+﻿<template>
+  <v-layout wrap justify-center class="pa-6">
+    <v-flex xs12 md12>
+      <v-card
+        class="mx-auto col-12"
+        max-width="1300"
+        elevation="2"
+        :loading="card.loader"
+        :disabled="card.disabled"
+      >
+        <v-card-title>
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon size="30" color="blue darken-4 ">mdi-cart-plus</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title class="headline"
+                >ReimpresiÃ³n Proforma</v-list-item-title
+              >
+            </v-list-item-content>
+          </v-list-item>
+        </v-card-title>
+        <div class="pa-0 px-8">
+          <v-card-text class="px-0 pa-0">
+            <v-row>
+              <v-col cols="3">
+                <v-menu
+                  v-model="pickeFechaIni"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="fecha_ini"
+                      label="Fecha Inicial"
+                      append-icon="event"
+                      hide-details
+                      outlined
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="fecha_ini"
+                    @input="pickeFechaIni = false"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+
+              <v-col cols="3">
+                <v-menu
+                  v-model="pickerFechaFinal"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="fecha_final"
+                      label="Fecha Final"
+                      append-icon="event"
+                      outlined
+                      hide-details
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="fecha_final"
+                    @input="pickerFechaFinal = false"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col class="d-flex justify-end" cols="12">
+                <v-btn
+                  color="indigo"
+                  class="ma-2 white--text px-12"
+                  depressed
+                  large
+                  @click="cargarcontenido"
+                >
+                  Consultar
+                  <v-icon right dark>mdi-file-upload-outline</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+
+            <v-row class="d-flex mb-4 justify-center" no-gutters>
+              <v-col class="mb-4" cols="6" sm="6">
+                <v-text-field
+                  v-model="search"
+                  append-icon="search"
+                  label="Buscar"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-col>
+            </v-row>
+
+            <v-data-table
+              :headers="headers"
+              :items="contenido"
+              item-key="numero_fact"
+              :search="search"
+            >
+              <template v-slot:expanded-item="{ headers, item }">
+                <td :colspan="headers.length">
+                  <table>
+                    <thead>
+                      <tr></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{ descripcionEstado(item.estado) }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </template>
+              <template v-slot:item.edit="{ item }">
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      color="red accent-3"
+                      fab
+                      small
+                      icon
+                      v-on="on"
+                      @click="print_item(item)"
+                    >
+                      <v-icon>mdi-file-pdf-box</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Imprimir PDF</span>
+                </v-tooltip>
+              </template>
+              <template v-slot:item.consec_fact="{ item }">
+                {{ parseInt(item.consec_fact) }}
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </div>
+      </v-card>
+    </v-flex>
+    <v-overlay :value="loader">
+      <flower-spinner :animation-duration="2500" :size="100" color="#0d47a1" />
+    </v-overlay>
+  </v-layout>
+</template>
+
+<script>
+import post from "../../methods.js";
+import { FlowerSpinner } from "epic-spinners";
+import { factura_titan, proforma_titan } from "../../_formatos.pdf";
+import pdfMake from "pdfmake/build/pdfmake.js";
+import * as pdfFonts from "pdfmake/build/vfs_fonts.js";
+pdfMake.vfs = pdfFonts?.default?.vfs || pdfFonts.pdfMake?.vfs;
+// import JsonExcel from "vue-json-excel";
+
+export default {
+  components: {
+    FlowerSpinner,
+  },
+  data() {
+    return {
+      agencias: [],
+      pickeFechaIni: false,
+      fecha_ini: this.$moment().format("YYYY-MM-01"),
+      pickerFechaFinal: false,
+      fecha_final: this.$moment().format("YYYY-MM-DD"),
+      anulados: null,
+      prest_facturas: [],
+      loader: false,
+      dialogo: {
+        estado: false,
+        titulo: null,
+        tipo: null,
+      },
+      dialog: true,
+      valid: false,
+      dialogPicker: false,
+      dialogPickerfin: false,
+      singleExpand: true,
+      expanded: [],
+      contenido: [],
+      search: "",
+      form: {},
+      headers: [
+        { text: "", value: "data-table-expand" },
+        { text: "Agencia", align: "center", value: "agencia_fact" },
+        { text: "Consecutivo", align: "center", value: "consec_fact" },
+        { text: "Fecha", align: "center", value: "fecha_fact" },
+        { text: "Cliente", align: "center", value: "cliente_fact" },
+        // { text: "Factura", align: "center", value: "llave_fact" },
+        { text: "Valor", align: "right", value: "valor_fact" },
+
+        // { text: "Estado", align: "center", value: "estado_fact" },
+        { text: "Opciones", value: "edit", align: "center" },
+      ],
+      errores: {
+        codigo: false,
+        estado: false,
+      },
+      card_estado: false,
+      logoSrc:
+        "https://server1ts.net/datos/image/clientes/" +
+        parseFloat(sessionStorage.Sesion.substr(0, 15)) +
+        ".png",
+      card: {
+        loader: false,
+        disabled: false,
+      },
+      datosEmpresa: [],
+      titulo_print: null,
+    };
+  },
+  created() {
+    this.cargarTablaAg();
+    this.get_empresa();
+  },
+  computed: {},
+  methods: {
+    async print_item(item, getBase64) {
+      this.card.loader = true;
+      this.card.disabled = true;
+      var fecha = item.fecha_fact.substr(0, 4);
+      let nrofact = item.consec_fact;
+      var agencia = "0001";
+      let prefijo = "0001";
+      var key = agencia + "|" + prefijo + "|" + nrofact + "|" + fecha + "|";
+      var datosEnvio = sessionStorage.Sesion + "|" + key;
+      return await post
+        .postData({
+          url: "Ptovta/dlls/PrProforma01J.dll",
+          data: datosEnvio,
+          method: "",
+        })
+        .then(async (data) => {
+          this.card.loader = false;
+          this.card.disabled = false;
+          this.correodestino = data[0].email_cliente.trim();
+          return await this.generar_pdf_2(data[0], getBase64);
+        })
+        .catch((err) => {
+          console.log(err);
+          this.card.loader = false;
+          this.card.disabled = false;
+          this.send_error("Error al imprimir el documento");
+        });
+    },
+
+    async generar_pdf_2(data, getBase64) {
+      let descripcion64 = " ";
+      descripcion64 = window.atob(data.Observaciones64);
+      if (descripcion64) {
+        data.observaciones = descripcion64;
+      }
+
+      var logo_src = require(`../../assets/image/clientes/${parseFloat(
+        sessionStorage.Sesion.substr(0, 15)
+      )}.png`);
+      const logo = await this.pdfs.getBase64(logo_src);
+      data.logo = logo;
+      data.condicion = this.condicion_pdf;
+
+      if (getBase64) return await proforma_titan(data, getBase64);
+      else proforma_titan(data);
+    },
+    format_punto_fact: function (val) {
+      return `${val.codigo_agc} - ${val.descripcion_agc}`;
+    },
+    descripcionEstado(e) {
+      return e == "1" ? "Desactivado" : "Activo";
+    },
+    cargarcontenido() {
+      var agencia = "0001";
+      this.contenido = [];
+      var fechaini = this.fecha_ini.split("-").join("");
+      var fechafin = this.fecha_final.split("-").join("");
+      this.loader = true;
+
+      post
+        .postData({
+          url: "ptovta/dlls/PrproformaJ.dll",
+          data:
+            sessionStorage.Sesion +
+            "|" +
+            agencia +
+            "|" +
+            fechaini +
+            "|" +
+            fechafin +
+            "|",
+          method: "",
+        })
+        .then((data) => {
+          this.loader = false;
+          this.contenido = JSON.parse(JSON.stringify(data));
+        })
+        .catch((err) => {
+          this.loader = false;
+          this.$emit("snack", {
+            color: "error",
+            text: "Error al cargar Notas Credito",
+            estado: true,
+          });
+        });
+    },
+    get_empresa() {
+      post
+        .postData({
+          url: "Financiero/dlls/CfEmpresaJ.dll",
+          data: sessionStorage.Sesion + "|",
+          method: "",
+        })
+        .then((data) => {
+          this.datosEmpresa = data[0];
+        })
+        .catch((err) => {
+          this.$emit("snack", {
+            color: "error",
+            text: "Error al cargar Agencias",
+            estado: true,
+          });
+        });
+    },
+    cargarTablaAg: function () {
+      post
+        .postData({
+          url: "Financiero/dlls/Cfagenciasj.dll",
+          data: sessionStorage.Sesion + "|",
+          method: "",
+        })
+        .then((data) => {
+          var filtro = data.filter((el) => el.estado_agc == "0");
+          this.agencias = filtro;
+        })
+        .catch((err) => {
+          this.$emit("snack", {
+            color: "error",
+            text: "Error al cargar Agencias",
+            estado: true,
+          });
+        });
+    },
+    _validarFechas() {
+      let fecha_ini = this.fecha_ini.split("-").join(""),
+        fecha_final = this.fecha_final.split("-").join(""),
+        retornar = true;
+      if (parseFloat(fecha_final) < parseFloat(fecha_ini)) {
+        this.$emit("snack", {
+          color: "error",
+          text: "La fecha final no puede ser menor a la fecha inicial",
+          estado: true,
+        });
+        retornar = false;
+      }
+      return retornar;
+    },
+
+    toObjectUrl(url) {
+      return fetch(url, { mode: "no-cors" })
+        .then((response) => {
+          return response.blob();
+        })
+        .then((blob) => {
+          return URL.createObjectURL(blob);
+        });
+    },
+    send_error(msj) {
+      this.$emit("snack", {
+        color: "error",
+        text: msj,
+        estado: true,
+      });
+    },
+  },
+};
+</script>
+

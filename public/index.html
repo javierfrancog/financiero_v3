@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="icon" href="<%= BASE_URL %>favicon_titan.ico" />
+  <title>Titan financiero</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" />
+  <script src="https://unpkg.com/nprogress"></script>
+
+  <style id="css_print">
+    @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap");
+
+    #impresion_titcl101 {
+      display: none;
+    }
+
+    body {
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      font-family: "Poppins", sans-serif;
+    }
+
+    #pdf_header_titcl101,
+    #pdf_body_titcl101 {
+      width: 100%;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    @media print {
+
+      #pdf_header_titcl101,
+      #pdf_body_titcl101 {
+        display: block;
+      }
+
+      #cargando_pdf {
+        display: none;
+      }
+    }
+
+    #pdf_header_titcl101 .logo {
+      max-width: 100%;
+      max-height: 80px;
+    }
+
+    #pdf_header_titcl101 th,
+    #pdf_body_titcl101 th,
+    #pdf_body_titcl101 {
+      font-weight: normal;
+      font-size: 12px;
+    }
+
+    #pdf_header_titcl101 thead tr:nth-child(1) th:nth-child(1) {
+      width: 15%;
+      padding: 0px;
+    }
+
+    #pdf_header_titcl101 thead tr:nth-child(1) th:nth-child(2) {
+      width: 35%;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    #pdf_header_titcl101 thead tr:nth-child(1) th:nth-child(3) {
+      width: 25%;
+      text-align: left;
+    }
+
+    #pdf_header_titcl101 thead tr:nth-child(1) th:nth-child(4) {
+      width: 25%;
+    }
+
+    #pdf_header_titcl101 .nombre_ips {
+      text-transform: uppercase;
+      font-size: 18px;
+    }
+
+    #pdf_header_titcl101 thead tr:nth-child(2) th:nth-child(1) {
+      width: 50%;
+      text-align: left;
+    }
+
+    #pdf_header_titcl101 thead tr:nth-child(2) th:nth-child(2) {
+      width: 25%;
+      text-align: left;
+    }
+
+    #pdf_header_titcl101 thead tr:nth-child(2) th:nth-child(3) {
+      width: 25%;
+    }
+
+    /* CSS Body */
+
+    #pdf_body_titcl101 th {
+      padding-top: 3px;
+      padding-bottom: 3px;
+      background-color: #111;
+      color: white;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 10px;
+    }
+
+    #pdf_body_titcl101 tbody tr td:nth-child(1),
+    #pdf_body_titcl101 tbody tr td:nth-child(3) {
+      width: 10%;
+      text-align: center;
+    }
+
+    #pdf_body_titcl101 tbody tr td:nth-child(3) {
+      width: 5%;
+    }
+
+    #pdf_body_titcl101 tbody tr td:nth-child(2) {
+      width: 45%;
+      text-align: left;
+    }
+
+    #pdf_body_titcl101 tbody tr td:nth-child(4),
+    #pdf_body_titcl101 tbody tr td:nth-child(5),
+    #pdf_body_titcl101 tbody tr td:nth-child(6),
+    #pdf_body_titcl101 tbody tr td:nth-child(7) {
+      width: 10%;
+      text-align: right;
+    }
+
+    #pdf_body_titcl101 tfoot tr:nth-child(1) td {
+      padding-top: 50px;
+    }
+
+    #pdf_body_titcl101 tfoot tr td:nth-child(1) {
+      text-align: left;
+    }
+
+    #pdf_body_titcl101 tfoot tr td:nth-child(5),
+    #pdf_body_titcl101 tfoot tr td:nth-child(4),
+    #pdf_body_titcl101 tfoot tr td:nth-child(2),
+    #pdf_body_titcl101 tfoot tr td:nth-child(3) {
+      text-align: right;
+    }
+
+    /* !CSS Body */
+  </style>
+
+  <style id="css_print2">
+    @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap");
+
+    #impresion2_titcl101 {
+      display: none;
+    }
+
+    body {
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      font-family: "Poppins", sans-serif;
+    }
+
+    #pdf2_header_titcl101,
+    #pdf2_body_titcl101 {
+      width: 100%;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    @media print {
+
+      #pdf2_header_titcl101,
+      #pdf2_body_titcl101 {
+        display: block;
+      }
+
+      #cargando_pdf {
+        display: none;
+      }
+    }
+
+    #pdf2_header_titcl101 .logo {
+      max-width: 100%;
+      max-height: 80px;
+    }
+
+    #pdf2_header_titcl101 th,
+    #pdf2_body_titcl101 th,
+    #pdf2_body_titcl101 {
+      font-weight: normal;
+      font-size: 12px;
+    }
+
+    #pdf2_header_titcl101 thead tr:nth-child(1) th:nth-child(1) {
+      width: 15%;
+      padding: 0px;
+    }
+
+    #pdf2_header_titcl101 thead tr:nth-child(1) th:nth-child(2) {
+      width: 35%;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    #pdf2_header_titcl101 thead tr:nth-child(1) th:nth-child(3) {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    #pdf2_header_titcl101 .nombre_ips {
+      text-transform: uppercase;
+      font-size: 18px;
+    }
+
+    #pdf2_header_titcl101 thead tr:nth-child(2) th:nth-child(1) {
+      width: 60%;
+      text-align: left;
+    }
+
+    #pdf2_header_titcl101 thead tr:nth-child(2) th:nth-child(2) {
+      width: 40%;
+      text-align: left;
+    }
+
+    #pdf2_body_titcl101 th {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      background-color: #111;
+      color: white;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 10px;
+    }
+
+    #pdf2_body_titcl101 tbody tr td:nth-child(2) {
+      width: 30%;
+      text-align: justify;
+    }
+
+    #pdf2_body_titcl101 tbody tr td:nth-child(1) {
+      vertical-align: baseline;
+    }
+
+    #pdf2_body_titcl101 tbody tr td:nth-child(1),
+    #pdf2_body_titcl101 tbody tr td:nth-child(3),
+    #pdf2_body_titcl101 tbody tr td:nth-child(4) {
+      width: 10%;
+      text-align: center;
+    }
+
+    #pdf2_body_titcl101 tbody tr td:nth-child(5),
+    #pdf2_body_titcl101 tbody tr td:nth-child(6),
+    #pdf2_body_titcl101 tbody tr td:nth-child(7),
+    #pdf2_body_titcl101 tbody tr td:nth-child(8) {
+      width: 10%;
+      text-align: right;
+    }
+
+    #pdf2_body_titcl101 tfoot tr:nth-child(1) td {
+      padding-top: 50px;
+    }
+
+    #pdf2_body_titcl101 tfoot tr td:nth-child(5),
+    #pdf2_body_titcl101 tfoot tr td:nth-child(4),
+    #pdf2_body_titcl101 tfoot tr td:nth-child(3) {
+      text-align: right;
+    }
+  </style>
+
+  <style id="css_download_pdf">
+    @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap");
+
+    #downloadPdf {
+      display: none;
+    }
+
+    body {
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      font-family: "Poppins", sans-serif;
+    }
+
+    #download_pdf_header,
+    #download_pdf_body {
+      width: 100%;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    @media print {
+
+      #download_pdf_header,
+      #download_pdf_body {
+        display: inline-table;
+      }
+
+      #cargando_pdf {
+        display: none;
+      }
+    }
+
+    #download_pdf_header {
+      border: 1px solid #000;
+      position: fixed;
+    }
+
+    #download_pdf_body {
+      position: absolute;
+    }
+
+    #download_pdf_body thead::before {
+      content: "";
+      display: block;
+      margin-top: 100px;
+    }
+
+    #download_pdf_header .logo {
+      max-width: 100%;
+      max-height: 80px;
+    }
+
+    #download_pdf_header th,
+    #download_pdf_header th {
+      font-weight: normal;
+      font-size: 10px;
+    }
+
+    #download_pdf_header th {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      /* background-color: #111; */
+      color: #111;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    #download_pdf_header thead tr:nth-child(1) td:nth-child(1) {
+      text-align: left;
+    }
+
+    #download_pdf_header thead tr:nth-child(1) td:nth-child(2) {
+      text-align: center;
+    }
+
+    #download_pdf_header thead tr:nth-child(1) td:nth-child(3) {
+      text-align: right;
+    }
+
+    #download_pdf_body tbody tr td:nth-child(5) {
+      width: 12%;
+      text-align: center;
+    }
+  </style>
+
+  <style id="css_print_comp">
+    @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap");
+
+    #impresion_comp {
+      display: none;
+    }
+
+    body {
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      font-family: "Poppins", sans-serif;
+    }
+
+    #marca_agua_comp {
+      position: absolute;
+      margin: 0 auto;
+      font-size: 116px;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      display: none;
+      align-items: center;
+      font-weight: bold;
+      color: rgba(0, 0, 0, 0.1);
+    }
+
+    #marca_agua_comp span {
+      transform-origin: 0 0;
+      transform: rotate(320deg);
+    }
+
+    #pdf_header_comp {
+      position: fixed;
+    }
+
+    #pdf_body_comp thead::before {
+      content: "";
+      display: block;
+      margin-top: 100px;
+    }
+
+    #pdf_body_comp {
+      border-collapse: collapse;
+    }
+
+    #pdf_header_comp .logo {
+      max-width: 100%;
+      max-height: 80px;
+    }
+
+    #pdf_body_comp thead th {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    #pdf_header_comp,
+    #pdf_body_comp {
+      width: 100%;
+      display: none;
+    }
+
+    @media print {
+
+      #pdf_header_comp,
+      #pdf_body_comp {
+        display: block;
+      }
+
+      #cargando_pdf {
+        display: none;
+      }
+
+      #marca_agua_comp {
+        display: inherit;
+      }
+    }
+
+    #pdf_header_comp th,
+    #pdf_body_comp th,
+    #pdf_body_comp {
+      font-weight: normal;
+      font-size: 12px;
+    }
+
+    #pdf_header_comp thead th:nth-child(1) {
+      width: 15%;
+      padding: 0px;
+    }
+
+    #pdf_header_comp thead th:nth-child(2) {
+      width: 20%;
+      padding: 0px;
+      text-align: left;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    #pdf_header_comp thead th:nth-child(3) {
+      width: 65%;
+      padding: 0px;
+      font-size: 14px;
+    }
+
+    #pdf_body_comp thead th {
+      text-align: center;
+    }
+
+    #pdf_body_comp tbody td {
+      text-align: center;
+      padding: 0 5px;
+    }
+
+    #pdf_body_comp thead th:nth-child(1) {
+      width: 5%;
+      text-align: center;
+    }
+
+    #pdf_body_comp tbody td:nth-child(1) {
+      width: 5%;
+      text-align: center;
+    }
+
+    #pdf_body_comp thead th:nth-child(2) {
+      width: 15%;
+    }
+
+    #pdf_body_comp tbody td:nth-child(2) {
+      width: 15%;
+      text-align: left;
+    }
+
+    #pdf_body_comp thead th:nth-child(3) {
+      width: 11%;
+    }
+
+    #pdf_body_comp tbody td:nth-child(3) {
+      width: 11%;
+      text-align: left !important;
+    }
+
+    #pdf_body_comp thead th:nth-child(4) {
+      width: 5%;
+    }
+
+    #pdf_body_comp tbody td:nth-child(4) {
+      width: 5%;
+      text-align: center !important;
+    }
+
+    #pdf_body_comp thead th:nth-child(5) {
+      width: 15%;
+    }
+
+    #pdf_body_comp tbody td:nth-child(5) {
+      width: 15%;
+      text-align: center !important;
+    }
+
+    #pdf_body_comp thead th:nth-child(6),
+    #pdf_body_comp thead th:nth-child(7) {
+      width: 12%;
+    }
+
+    #pdf_body_comp tbody td:nth-child(6),
+    #pdf_body_comp tbody td:nth-child(7) {
+      width: 12%;
+      text-align: right !important;
+    }
+
+    #pdf_body_comp thead th:nth-child(8) {
+      width: 20%;
+    }
+
+    #pdf_body_comp tbody td:nth-child(8) {
+      width: 20%;
+      padding-left: 20px;
+      text-align: left !important;
+    }
+
+    #pdf_body_comp tbody tr {
+      border-bottom: 1px solid #ccc;
+    }
+
+    #pdf_body_comp thead tr {
+      background: #000;
+      color: #fff;
+    }
+
+    #pdf_body_comp tfoot::before {
+      content: "";
+      display: block;
+      margin-top: 10px;
+    }
+
+    #pdf_body_comp tfoot tr:nth-child(1) td:nth-child(1),
+    #pdf_body_comp tfoot tr:nth-child(1) td:nth-child(2),
+    #pdf_body_comp tfoot tr:nth-child(1) td:nth-child(3) {
+      text-align: right;
+    }
+  </style>
+
+  <style id="css_print_prfact01">
+    @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap");
+
+    #impresion_prfact {
+      display: none;
+    }
+
+    body {
+      margin: 0 auto;
+      width: 100%;
+      height: 100%;
+      font-family: "Poppins", sans-serif;
+    }
+
+    #pdf_header,
+    #pdf_body {
+      width: 100%;
+      display: none;
+    }
+
+    @media print {
+
+      #pdf_header,
+      #pdf_body {
+        display: block !important;
+        width: 100%;
+      }
+
+      #cargando_pdf {
+        display: none;
+      }
+    }
+
+    #pdf_header .logo {
+      max-width: 100%;
+      max-height: 80px;
+    }
+
+    #pdf_header th,
+    #pdf_body th,
+    #pdf_body {
+      font-weight: normal;
+      font-size: 12px;
+    }
+
+    #pdf_header thead tr:nth-child(1) th:nth-child(1) {
+      width: 50%;
+      padding: 0px;
+      text-align: left;
+      border-bottom: 2px solid #000;
+    }
+
+    #pdf_header thead tr:nth-child(1) th:nth-child(2) {
+      width: 15%;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #000;
+    }
+
+    #pdf_header thead tr:nth-child(1) th:nth-child(3) {
+      font-weight: 600;
+      font-size: 16px;
+      border-bottom: 2px solid #000;
+    }
+
+    #pdf_header thead tr:nth-child(2) th:nth-child(1) {
+      width: 100%;
+      text-align: left;
+    }
+
+    #pdf_body th {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      background-color: #111;
+      color: white;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 10px;
+    }
+
+    #pdf_body tbody td:nth-child(1) {
+      width: 10%;
+      text-align: center;
+    }
+
+    #pdf_body tbody td:nth-child(2) {
+      width: 30%;
+      text-align: left;
+    }
+
+    #pdf_body tbody td:nth-child(3) {
+      width: 10%;
+      text-align: center;
+    }
+
+    #pdf_body tbody td:nth-child(4) {
+      width: 10%;
+      text-align: center;
+    }
+
+    #pdf_body tbody td:nth-child(5),
+    #pdf_body tbody td:nth-child(6),
+    #pdf_body tbody td:nth-child(7) {
+      width: 15%;
+      text-align: right;
+    }
+
+    #pdf_body tfoot::before {
+      content: "";
+      display: block;
+      margin-top: 80px;
+    }
+
+    #pdf_body tfoot td:last-child {
+      text-align: right;
+    }
+  </style>
+
+  <style id="css_estados">
+    @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap");
+
+    #impresion_estados {
+      display: none;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+    }
+
+    .titulo_doc {
+      width: 100%;
+      font-size: 28px;
+      font-weight: 500;
+      color: #01579b;      
+    }
+
+    #page_footer {
+      position: fixed;
+      bottom: 50px;
+      padding: 0 20px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 33.333% 33.333% 33.333%;
+      box-sizing: border-box;
+    }
+
+    #page_footer div {
+      border-top: 1px solid #222;
+      font-weight: bold;
+      color: #222;
+      font-size: 12px;
+      margin: 0 20px;
+    }
+
+    /* table {
+        font-size: 10px;
+      } */
+
+    table td:nth-child(2),
+    table td:nth-child(3),
+    table td:nth-child(4),
+    table td:nth-child(5) {
+      text-align: right;
+    }
+
+    #page_activos,
+    #page_pasivos,
+    #page_ingresos {
+      min-height: 100%;
+      height: auto;
+      width: 100%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 0 20px 150px 20px;
+      box-sizing: border-box;
+      page-break-inside: auto
+    }
+
+    #page_footer {
+      display: none;
+    }
+
+    @page {
+      size: auto;
+      /* auto is the initial value */
+
+      /* this affects the margin in the printer settings */
+      /* margin: 50mm 50mm 50mm 50mm; */
+    }
+
+    @media print {
+
+      #page_activos,
+      #page_pasivos,
+      #page_ingresos {
+        display: flex !important;
+        width: 100%;
+      }
+
+      #page_footer {
+        /* display: grid !important; */
+        width: 100%;
+      }
+
+      #cargando_pdf {
+        display: none;
+      }
+    }
+
+    #activos_table,
+    #pasivos_table,
+    #ingresos_table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .titulo_row {
+      border-top: 2px solid #1897d0;
+      border-bottom: 2px solid #1897d0;
+      color: #ff5722;
+    }
+
+    .total_final_row {
+      font-weight: bold;
+    }
+
+    .total_final_row td {
+      border-top: 2px solid #1897d0;
+      /* border-bottom: 2px solid #1897d0; */
+      font-size: 14px;
+    }
+
+    .total_final_row td:nth-child(1) {
+      text-align: right;
+    }
+
+    .total_row {
+      border-top: 2px solid #1897d0;
+    }
+
+    .total_row td:nth-child(1),
+    .total_final_row td:nth-child(1) {
+      color: #ff5722;
+    }
+
+    .total_row td {
+      font-weight: 600 !important;
+    }
+
+    .titulo_row td {
+      padding: 5px 0;
+    }
+
+    .subtitulo_row {
+      color: #ff5722;
+    }
+
+    .pt-15 td {
+      padding-top: 15px;
+    }
+
+    .row_margin::after {
+      content: "";
+      display: block;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <noscript>
+    <strong>
+      We're sorry but financiero doesn't work properly without JavaScript
+      enabled. Please enable it to continue.
+    </strong>
+  </noscript>
+  <div id="app"></div>
+</body>
+
+</html>
