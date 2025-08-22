@@ -5,9 +5,9 @@
         <v-row no-gutters class="fill-height">
           <!-- Panel izquierdo con imagen y branding -->
           <v-col 
-            cols="12" 
-            md="6" 
-            class="login-image-panel d-flex align-start justify-center pt-12"
+            cols="10" 
+            md="7" 
+            class="login-image-panel ml-4 d-flex align-center justify-center"
           >
             <div class="image-content">
               <div class="welcome-text text-center">
@@ -15,10 +15,10 @@
                   Bienvenido
                 </h1>
                 <p class="text-h6 text-blue-lighten-2 mb-0">
-                  Plataforma Empresarial Integral
+                  Plataforma Empresarial
                 </p>
                 <p class="text-subtitle-1 text-blue-lighten-3">
-                  Gestión financiera avanzada para tu empresa
+                  Plataforma de Gestión Avanzada para tu Empresa
                 </p>
               </div>
             </div>
@@ -27,7 +27,7 @@
           <!-- Panel derecho con formulario -->
           <v-col 
             cols="12" 
-            md="6" 
+            md="4" 
             class="login-form-panel d-flex align-center justify-center"
           >
             <div class="form-wrapper">
@@ -191,9 +191,15 @@
 .login-image-panel {
   background: url('http://www.imagenes.titansolucionescloud.ovh/fondo_login.png') !important;
   background-position: center center !important;
-  background-size: cover !important;
+  background-size: 95% !important;
   background-repeat: no-repeat !important;
+  background-color: #1976d2 !important;
   position: relative;
+  min-height: 95vh !important;
+  height: 95vh !important;
+  border-radius: 20px !important;
+  margin: 20px !important;
+  overflow: hidden;
   
   /* Overlay sutil para mejor legibilidad del texto */
   &::before {
@@ -203,7 +209,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.1);
     z-index: 1;
   }
   
@@ -212,7 +218,7 @@
     z-index: 2;
     text-align: center;
     padding: 2rem;
-    margin-top: 4rem; /* Bajar el contenido */
+    margin-top: 0; /* Centrar el contenido */
   }
 }
 

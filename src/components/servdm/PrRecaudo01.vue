@@ -1,58 +1,68 @@
 <template>
-  <v-layout wrap justify-center class="pa-6">
-    <v-flex xs12 md12>
-      <v-card
-        class="mx-auto col-12"
-        max-width="1300"
-        elevation="2"
-        :loading="loaderCard"
-        :disabled="loaderCard"
-      >
-        <v-card-title>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon size="30" color="blue darken-4 "
-                >mdi-account-cash-outline</v-icon
-              >
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title class="headline ml-2"
-                >Recaudo Servicios Domiciliarios</v-list-item-title
-              >
-            </v-list-item-content>
-            <v-col class="d-flex" cols="12" sm="3">
-              <v-menu
-                v-model="pickerMes"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
+  <v-container fluid>
+    <v-row justify="center">
+      <v-col cols="12" md="10" lg="8">
+        <v-card
+          elevation="8"
+          rounded="xl"
+          class="overflow-hidden"
+          :loading="loaderCard"
+          :disabled="loaderCard"
+        >
+          <v-card-title class="pa-6 bg-gradient-primary text-white">
+            <div class="d-flex align-center w-100">
+              <div class="icon-wrapper me-4">
+                <v-icon size="28" color="white">mdi-account-cash-outline</v-icon>
+              </div>
+              <div class="flex-grow-1">
+                <h1 class="text-h4 font-weight-bold mb-1">Recaudo Servicios Domiciliarios</h1>
+                <p class="text-body-1 mb-0 opacity-90">Gestión de recaudos y facturación de servicios</p>
+              </div>
+              <div class="ml-4">
+                <v-menu
+                  v-model="pickerMes"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ props }">
+                    <v-text-field
+                      v-model="form.fecha_doc"
+                      label="Fecha Recaudo"
+                      variant="solo"
+                      density="compact"
+                      prepend-inner-icon="mdi-calendar"
+                      readonly
+                      v-bind="props"
+                      class="fecha-picker"
+                      color="white"
+                      bg-color="rgba(255,255,255,0.1)"
+                      style="min-width: 200px;"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
                     v-model="form.fecha_doc"
-                    label="Fecha Recaudo"
-                    append-icon="event"
-                    hide-details
-                    outlined
-                    disabled
-                    v-on="on"
-                    class="fecha"
-                    Autocomplete="off"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="form.fecha_doc"
-                  scrollable
-                  no-title
-                  type="month"
-                  @input="pickerMes = false"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-list-item>
-        </v-card-title>
+                    hide-header
+                    type="month"
+                    @update:model-value="pickerMes = false"
+                  ></v-date-picker>
+                </v-menu>
+              </div>
+              <v-spacer></v-spacer>
+              <v-chip
+                variant="elevated"
+                color="white"
+                text-color="primary"
+                size="small"
+                class="font-weight-bold"
+              >
+                <v-icon start size="16">mdi-currency-usd</v-icon>
+                Recaudos
+              </v-chip>
+            </div>
+          </v-card-title>
         <div class="pa-0 px-8">
           <v-card-text class="px-0 pa-0">
             <v-row>
@@ -148,43 +158,71 @@
           </v-card-text>
         </div>
 
-        <div class="pa-0 px-8">
-          <v-card-text class="px-0 pa-0">
-            <v-data-table
-              :headers="headers"
-              :items="contenido"
-              item-key="identificacion"
-              :search="search"
-              class="elevation-1"
-              disable-pagination
-            >
-              <template v-slot:item.item="{ item }">{{
-                contenido.indexOf(item) + 1
-              }}</template>
-              <template v-slot:item.accion="{ item }">
-                <v-btn
-                  fab
-                  x-small
-                  color="red darken-2"
-                  outlined
-                  depressed
-                  @click="delete_item(item)"
-                  ><v-icon> mdi-delete </v-icon>
-                </v-btn>
-              </template>
-              <template v-slot:body.append>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td class="text-right"><b>Total: </b></td>
-                  <td class="text-center">$ {{ formatNumero(valor_total) }}</td>
-                  <td></td>
-                </tr>
-              </template>
-            </v-data-table>
+          <v-card-text class="pa-6">
+            <v-row class="mb-4" align="center">
+              <v-col>
+                <div class="d-flex align-center">
+                  <v-icon color="primary" class="me-3" size="20">mdi-table-edit</v-icon>
+                  <h3 class="text-h6 font-weight-medium text-primary mb-0">
+                    Detalle de Recaudos
+                  </h3>
+                </div>
+              </v-col>
+              <v-col class="d-flex justify-end">
+                <v-chip
+                  :color="contenido.length > 0 ? 'success' : 'info'"
+                  variant="elevated"
+                  size="small"
+                >
+                  <v-icon start size="16">mdi-counter</v-icon>
+                  {{ contenido.length }} Registros
+                </v-chip>
+              </v-col>
+            </v-row>
+
+            <v-card variant="outlined" class="rounded-lg overflow-hidden">
+              <v-data-table
+                :headers="headers"
+                :items="contenido"
+                item-key="identificacion"
+                :search="search"
+                disable-pagination
+                hide-default-footer
+                class="elevation-0"
+              >
+                <template v-slot:item.item="{ item }">
+                  {{ contenido.indexOf(item) + 1 }}
+                </template>
+                <template v-slot:item.accion="{ item }">
+                  <v-tooltip location="top">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        color="error"
+                        variant="text"
+                        size="small"
+                        icon
+                        v-bind="props"
+                        @click="delete_item(item)"
+                      >
+                        <v-icon size="18">mdi-delete-outline</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Eliminar registro</span>
+                  </v-tooltip>
+                </template>
+                <template v-slot:body.append>
+                  <tr class="bg-grey-lighten-4">
+                    <td colspan="3"></td>
+                    <td class="text-right font-weight-bold">Total:</td>
+                    <td class="text-center font-weight-bold text-primary">
+                      $ {{ formatNumero(valor_total) }}
+                    </td>
+                    <td></td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-card>
           </v-card-text>
-        </div>
         <v-divider
           class="mt-6"
           :style="{ 'border-width': '2px', 'border-color': 'orange' }"
@@ -208,11 +246,15 @@
             </v-data-table>
           </v-card>
         </div>
-      </v-card>
-    </v-flex>
-    <v-overlay :value="loader">
-      <flower-spinner :animation-duration="2500" :size="100" color="#0d47a1" />
-    </v-overlay>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+
+  <!-- Loading Overlay -->
+  <v-overlay v-model="loader">
+    <flower-spinner :animation-duration="2500" :size="100" color="#0d47a1" />
+  </v-overlay>
     <v-dialog v-model="dialogo.estado" persistent max-width="900px">
       <v-card class="px-6" :loading="card_estado" :disabled="card_estado">
         <v-card-title>
@@ -736,16 +778,142 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-layout>
 </template>
-<style lang="sass">
-.v-data-table tbody tr.v-data-table__expanded__content
-  box-shadow: none!important
-  background: #f5f9ff
 
-.inputbarra fieldset
-  border-width: 2px!important
-  color: #ffa500
+<style scoped>
+/* Gradiente moderno para el header */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 50%, #0d47a1 100%);
+  box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3);
+}
+
+/* Contenedor de icono mejorado */
+.icon-wrapper {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 8px;
+  backdrop-filter: blur(10px);
+}
+
+/* Date picker en header con estilo transparente */
+.fecha-picker .v-field__input {
+  color: white !important;
+}
+
+.fecha-picker .v-field__prepend-inner .v-icon {
+  color: white !important;
+}
+
+/* Campos de entrada con estilo moderno */
+.v-field--outlined {
+  border-radius: 12px !important;
+}
+
+/* Botones con sombras suaves */
+.v-btn {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.v-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Cards con efecto glass */
+.v-card {
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Tabla con diseño limpio */
+.v-data-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.v-data-table__wrapper {
+  border-radius: 12px;
+}
+
+/* Dividers modernos */
+.v-divider {
+  opacity: 0.3;
+}
+
+/* Animaciones suaves */
+.v-card-actions {
+  transition: all 0.3s ease;
+}
+
+/* Mejoras de tipografía */
+.text-h4 {
+  letter-spacing: -0.02em;
+}
+
+.text-h6 {
+  letter-spacing: -0.01em;
+}
+
+/* Espaciado consistente */
+.gap-3 {
+  gap: 12px;
+}
+
+/* Efectos hover para iconos */
+.v-icon {
+  transition: all 0.2s ease;
+}
+
+.v-btn:hover .v-icon {
+  transform: scale(1.1);
+}
+
+/* Mejoras de accesibilidad */
+.v-btn:focus {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+/* Responsive design mejorado */
+@media (max-width: 960px) {
+  .v-card-actions .v-col {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .gap-3 {
+    gap: 8px;
+  }
+
+  .v-btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
+
+/* Estado de loading mejorado */
+.v-btn--loading {
+  opacity: 0.8;
+}
+
+/* Chips con estilo moderno */
+.v-chip {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Tabla expandida mejorada */
+.v-data-table tbody tr.v-data-table__expanded__content {
+  box-shadow: none !important;
+  background: #f5f9ff;
+}
+
+/* Input para código de barras */
+.inputbarra fieldset {
+  border-width: 2px !important;
+  color: #ffa500;
+}
 </style>
 <style>
 .inputbarra {

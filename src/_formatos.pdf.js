@@ -3,10 +3,10 @@ import pdfMake from "pdfmake/build/pdfmake";
 import { vfs } from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = vfs;
 
-
 import { cond, trim } from "lodash";
 import printJS from "print-js";
 import QRCode from 'qrcode'
+import IMask from 'imask';
 
 
 var formatNumero = function (val) {

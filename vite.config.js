@@ -47,6 +47,19 @@ export default defineConfig({
 
   server: {
     port: 5173,
-    host: true
+    host: true,
+    proxy: {
+      '/api/images': {
+        target: 'http://www.imagenes.titansolucionescloud.ovh',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api\/images/, ''),
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+        }
+      }
+    }
   }
 });

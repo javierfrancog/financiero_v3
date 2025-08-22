@@ -1,93 +1,125 @@
 <template>
-  <v-layout wrap justify-center class="pa-6">
-    <v-flex xs12 md12>
-      <v-card
-        class="mx-auto col-12"
-        max-width="1300"
-        elevation="2"
-        :loading="card.loader"
-        :disabled="card.disabled"
-      >
-        <v-card-title>
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon size="30" color="blue darken-4 "
-                >mdi-currency-rupee</v-icon
-              >
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title class="headline"
-                >Recaudo de Financiaciones</v-list-item-title
-              >
-            </v-list-item-content>
-            <v-col class="d-flex" cols="12" sm="3">
-              <v-menu
-                v-model="pickerMes"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
+  <v-container fluid>
+    <v-row justify="center">
+      <v-col cols="12" md="10" lg="8">
+        <v-card 
+          elevation="8" 
+          rounded="xl" 
+          class="overflow-hidden"
+          :loading="card.loader"
+          :disabled="card.disabled"
+        >
+          <v-card-title 
+            class="pa-6 bg-gradient-primary text-white"
+          >
+            <div class="d-flex align-center w-100">
+              <div class="icon-wrapper me-4">
+                <v-icon size="28" color="white">mdi-currency-usd-circle</v-icon>
+              </div>
+              <div class="flex-grow-1">
+                <h1 class="text-h4 font-weight-bold mb-1">Recaudo de Financiaciones</h1>
+                <p class="text-body-1 mb-0 opacity-90">Gestión de cobros y pagos de financiaciones</p>
+              </div>
+              <div class="ml-4">
+                <v-menu
+                  v-model="pickerMes"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ props }">
+                    <v-text-field
+                      v-model="form.fecha_doc"
+                      label="Fecha Recaudo"
+                      variant="solo"
+                      density="compact"
+                      prepend-inner-icon="mdi-calendar"
+                      readonly
+                      v-bind="props"
+                      class="fecha-picker"
+                      color="white"
+                      bg-color="rgba(255,255,255,0.1)"
+                      style="min-width: 200px;"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
                     v-model="form.fecha_doc"
-                    label="Fecha Recaudo"
-                    append-icon="event"
-                    hide-details
-                    outlined
-                    v-on="on"
-                    class="fecha"
-                    Autocomplete="off"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="form.fecha_doc"
-                  scrollable
-                  no-title
-                  @input="pickerMes = false"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-list-item>
-        </v-card-title>
-        <div class="pa-0 px-8">
-          <v-card-text class="px-0 pa-0">
-            <v-row>
-              <v-col class="d-flex" cols="5">
+                    hide-header
+                    @update:model-value="pickerMes = false"
+                  ></v-date-picker>
+                </v-menu>
+              </div>
+              <v-spacer></v-spacer>
+              <v-chip
+                variant="elevated"
+                color="white"
+                text-color="primary"
+                size="small"
+                class="font-weight-bold"
+              >
+                <v-icon start size="16">mdi-bank-transfer</v-icon>
+                Recaudos
+              </v-chip>
+            </div>
+          </v-card-title>
+
+          <v-card-text class="pa-6">
+            <v-row class="mb-4" align="center">
+              <v-col>
+                <div class="d-flex align-center">
+                  <v-icon color="primary" class="me-3" size="20"
+                    >mdi-filter-outline</v-icon
+                  >
+                  <h3 class="text-h6 font-weight-medium text-primary mb-0">
+                    Filtros de Búsqueda
+                  </h3>
+                </div>
+              </v-col>
+            </v-row>
+
+            <v-row class="mb-4">
+              <v-col cols="12" md="6">
                 <v-autocomplete
                   label="Usuario"
                   v-model="form.usuario"
                   :items="usuarios"
-                  :item-text="format_usuarios"
+                  :item-title="format_usuarios"
                   item-value="cod_rep"
                   clearable
-                  hide-details
                   return-object
-                  outlined
-                  @change="(errores.medidor = false), cargarcontenido()"
+                  variant="outlined"
+                  density="comfortable"
+                  color="primary"
+                  prepend-inner-icon="mdi-account"
+                  @update:model-value="(errores.medidor = false), cargarcontenido()"
                   :error="errores.medidor"
+                  class="rounded-lg"
                 ></v-autocomplete>
               </v-col>
-              <v-col class="d-flex" cols="5">
+              <v-col cols="12" md="6">
                 <v-autocomplete
                   label="Financiaciones"
                   v-model="form.financiac"
                   :items="financiaciones"
-                  :item-text="format_financiac"
+                  :item-title="format_financiac"
                   item-value="consec_rep"
-                  hide-details
                   clearable
-                  outlined
                   return-object
-                  @change="(errores.financiac = false), cargarfinanciacion()"
+                  variant="outlined"
+                  density="comfortable"
+                  color="primary"
+                  prepend-inner-icon="mdi-currency-usd"
+                  @update:model-value="(errores.financiac = false), cargarfinanciacion()"
                   :error="errores.financiac"
+                  class="rounded-lg"
                 ></v-autocomplete>
               </v-col>
             </v-row>
 
-            <v-row v-if="this.contenido" class="mb-1">
-              <v-col class="d-flex" cols="3">
+            <v-row v-if="this.contenido" class="mb-4">
+              <v-col cols="12" md="4">
                 <v-menu
                   ref="menu"
                   v-model="dialogPickerini"
@@ -96,51 +128,92 @@
                   min-width="290px"
                   required
                 >
-                  <template v-slot:activator="{ on }">
+                  <template v-slot:activator="{ props }">
                     <v-text-field
                       label="Fecha Primera Cuota"
-                      outlined
+                      variant="outlined"
+                      density="comfortable"
+                      color="primary"
                       v-model="form.fechaini"
-                      hide-details
-                      v-on="on"
+                      prepend-inner-icon="mdi-calendar"
+                      readonly
+                      v-bind="props"
+                      class="rounded-lg"
                     ></v-text-field>
                   </template>
                   <v-date-picker
                     v-model="form.fechaini"
-                    @input="dialogPicker = false"
+                    @update:model-value="dialogPicker = false"
                   ></v-date-picker>
                 </v-menu>
               </v-col>
             </v-row>
 
-            <v-data-table
-              :headers="headers"
-              :items="contenido"
-              :expanded.sync="expanded"
-              item-key="cuotacr_rep"
-              :search="search"
-              v-model="list_select"
-              disable-pagination
-            >
-              <template v-slot:item.edit="{ item }">
-                <v-icon small class="mr-2" @click="editar_item(item)"
-                  >edit</v-icon
+            <v-row class="mb-4" align="center">
+              <v-col>
+                <div class="d-flex align-center">
+                  <v-icon color="primary" class="me-3" size="20"
+                    >mdi-table-edit</v-icon
+                  >
+                  <h3 class="text-h6 font-weight-medium text-primary mb-0">
+                    Detalle de Financiaciones
+                  </h3>
+                </div>
+              </v-col>
+              <v-col class="d-flex justify-end">
+                <v-chip
+                  :color="contenido.length > 0 ? 'success' : 'info'"
+                  variant="elevated"
+                  size="small"
                 >
-              </template>
+                  <v-icon start size="16">mdi-counter</v-icon>
+                  {{ contenido.length }} Registros
+                </v-chip>
+              </v-col>
+            </v-row>
 
+            <v-card variant="outlined" class="rounded-lg overflow-hidden">
+              <v-data-table
+                :headers="headers"
+                :items="contenido"
+                v-model:expanded="expanded"
+                item-key="cuotacr_rep"
+                :search="search"
+                v-model="list_select"
+                disable-pagination
+                hide-default-footer
+                class="elevation-0"
+              >
+                <template v-slot:item.edit="{ item }">
+                  <v-tooltip location="top">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        color="primary"
+                        variant="text"
+                        size="small"
+                        icon
+                        v-bind="props"
+                        @click="editar_item(item)"
+                      >
+                        <v-icon size="18">mdi-pencil-outline</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Editar Item</span>
+                  </v-tooltip>
+                </template>
 
               <template v-slot:item.anula="{ item }">
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                <v-tooltip location="top">
+                  <template v-slot:activator="{ props }">
                     <v-btn
                       @click="anula_item(item)"
-                      color="red accent-3"
-                      fab
-                      small
+                      color="error"
+                      variant="text"
+                      size="small"
                       icon
-                      v-on="on"
+                      v-bind="props"
                     >
-                      <v-icon>mdi-delete-empty</v-icon>
+                      <v-icon size="18">mdi-delete-outline</v-icon>
                     </v-btn>
                   </template>
                   <span>Eliminar</span>
@@ -171,218 +244,175 @@
                 </tr>
               </template>
             </v-data-table>
+            </v-card>
           </v-card-text>
-        </div>
-        <v-row>
-          <v-col class="d-flex justify-end" cols="12">
-            <v-btn
-              color="indigo"
-              class="ma-2 white--text"
-              large
-              depressed
-              @click="guardar_recaudo()"
-              :disabled="contenido.length == 0"
-            >
-              Grabar Recaudo
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-flex>
-    <v-overlay :value="loader">
-      <flower-spinner :animation-duration="2500" :size="100" color="#0d47a1" />
-    </v-overlay>
-    <v-dialog v-model="dialogoModificar.estado" max-width="600" persistent>
-      <v-card
-        :loading="dialogoModificar.load"
-        :disabled="dialogoModificar.load"
-      >
-        <v-card-title class="headline">Modificar Pago</v-card-title>
 
-        <v-card-text>
-          <v-row class="d-flex justify-end">
-            <v-col cols="6">
-              <v-text-field
-                label="Valor Capital"
-                outlined
-                hide-details
-                v-model="form.vlr_capital"
-                type="number"
-                ref="input_cantidad"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="6">
-              <v-text-field
-                label="Valor Intereses"
-                outlined
-                hide-details
-                v-model="form.vlr_intereses"
-                type="number"
-                ref="input_cantidad"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-divider />
-        </v-card-text>
+          <v-divider class="my-0" color="primary" thickness="1"></v-divider>
 
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            color="red darken-1"
-            class="white--text"
-            depressed
-            @click="cancelar_modificar"
-            >Cancelar</v-btn
-          >
-          <v-btn
-            color="green"
-            class="white--text"
-            depressed
-            @click="guardar_cambios"
-            >Guardar cambios</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="dialogoFinancia.estado" max-width="900" persistent>
-      <v-flex xs12 md12>
-        <v-card
-          :loading="dialogoFinancia.load"
-          :disabled="dialogoFinancia.load"
-        >
-          <v-card-title class="headline">Generación Financiación</v-card-title>
-
-          <v-card-text>
-            <v-row>
-              <v-col cols="6">
-                <v-text-field
-                  label="Usuario"
-                  hide-details
-                  disabled
-                  v-model="form.usuariorefinanc"
-                ></v-text-field>
+          <v-card-actions class="pa-6 bg-grey-lighten-5">
+            <v-row align="center" no-gutters>
+              <v-col>
+                <div class="text-caption text-grey-darken-1">
+                  Total de registros: <strong>{{ contenido.length }}</strong>
+                </div>
               </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  label="Concepto"
-                  hide-details
-                  disabled
-                  v-model="form.concepto"
-                ></v-text-field>
+              <v-col class="d-flex justify-end">
+                <v-btn
+                  color="success"
+                  variant="elevated"
+                  size="large"
+                  rounded="lg"
+                  @click="guardar_recaudo()"
+                  :disabled="contenido.length === 0"
+                  class="px-8"
+                >
+                  <v-icon start size="18">mdi-content-save</v-icon>
+                  Grabar Recaudo
+                </v-btn>
               </v-col>
             </v-row>
-          </v-card-text>
-
-          <v-row>
-            <v-col cols="3">
-              <v-menu
-                ref="menu"
-                v-model="dialogPickerini"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-                required
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    label="Fecha Inicio"
-                    outlined
-                    disabled
-                    v-model="form.fechaini"
-                    hide-details
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="form.fechaini"
-                  @input="pickeFechaIni = false"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-            <v-col cols="3">
-              <v-text-field
-                label="Valor a Financiar"
-                outlined
-                hide-details
-                clearable
-                v-model="form.valorfinanc"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="2">
-              <v-text-field
-                label="Cuotas"
-                outlined
-                clearable
-                hide-details
-                v-model="form.cuotasfinanc"
-              ></v-text-field>
-            </v-col>
-            <v-col cols="2">
-              <v-text-field
-                label="Interés Mensual"
-                outlined
-                hide-details
-                v-model="form.tasafinanc"
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-divider class="mt-2" color="#FF6F00"></v-divider>
-          <div class="mt-2 pa-0 px-8">
-            <v-card-text class="px-0 pa-0">
-              <v-data-table
-                :items="tablefinanc.items"
-                :headers="tablefinanc.headers"
-              >
-              </v-data-table>
-            </v-card-text>
-          </div>
-
-          <v-row> </v-row>
-          <v-row> </v-row>
-          <v-row> </v-row>
-          <v-row> </v-row>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-
-            <v-btn
-              color="red darken-1"
-              class="white--text"
-              depressed
-              @click="cancelar_financia"
-              >Cancelar</v-btn
-            >
-            <v-btn
-              color="green"
-              class="white--text"
-              depressed
-              @click="guardar_financia"
-              >Guardar Financiación</v-btn
-            >
           </v-card-actions>
         </v-card>
-      </v-flex>
-    </v-dialog>
-  </v-layout>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
+<style scoped>
+/* Gradiente moderno para el header */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 50%, #0d47a1 100%);
+  box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3);
+}
+
+/* Contenedor de icono mejorado */
+.icon-wrapper {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 8px;
+  backdrop-filter: blur(10px);
+}
+
+/* Date picker en header con estilo transparente */
+.fecha-picker .v-field__input {
+  color: white !important;
+}
+
+.fecha-picker .v-field__prepend-inner .v-icon {
+  color: white !important;
+}
+
+/* Campos de entrada con estilo moderno */
+.v-field--outlined {
+  border-radius: 12px !important;
+}
+
+/* Botones con sombras suaves */
+.v-btn {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.v-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Cards con efecto glass */
+.v-card {
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Tabla con diseño limpio */
+.v-data-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.v-data-table__wrapper {
+  border-radius: 12px;
+}
+
+/* Dividers modernos */
+.v-divider {
+  opacity: 0.3;
+}
+
+/* Animaciones suaves */
+.v-card-actions {
+  transition: all 0.3s ease;
+}
+
+/* Mejoras de tipografía */
+.text-h4 {
+  letter-spacing: -0.02em;
+}
+
+.text-h6 {
+  letter-spacing: -0.01em;
+}
+
+/* Espaciado consistente */
+.gap-3 {
+  gap: 12px;
+}
+
+/* Efectos hover para iconos */
+.v-icon {
+  transition: all 0.2s ease;
+}
+
+.v-btn:hover .v-icon {
+  transform: scale(1.1);
+}
+
+/* Mejoras de accesibilidad */
+.v-btn:focus {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+/* Responsive design mejorado */
+@media (max-width: 960px) {
+  .v-card-actions .v-col {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  .gap-3 {
+    gap: 8px;
+  }
+
+  .v-btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
+
+/* Estado de loading mejorado */
+.v-btn--loading {
+  opacity: 0.8;
+}
+
+/* Chips con estilo moderno */
+.v-chip {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+</style>
 
 <script>
 import post from "../../methods.js";
 import { FlowerSpinner } from "epic-spinners";
-
 import pdfMake from "pdfmake/build/pdfmake.js";
 import * as pdfFonts from "pdfmake/build/vfs_fonts.js";
 pdfMake.vfs = pdfFonts?.default?.vfs || pdfFonts.pdfMake?.vfs;
-
 import { PDFDocument } from "pdf-lib";
 import Chart from 'chart.js/auto'
-
 import { formato_amortiza } from "../../_formatos_sdm.js";
 
 export default {
-
   components: {
     FlowerSpinner,
   },

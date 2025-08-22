@@ -1,4 +1,4 @@
-﻿const Excel = require("exceljs");
+﻿import Excel from "exceljs";
 
 class _impresion_excel {
   workbook = new Excel.Workbook();
@@ -290,5 +290,5 @@ var formatos_excel = {
   },
 };
 
-export { formatos_excel };
+export { formatos_excel, _informe };
 

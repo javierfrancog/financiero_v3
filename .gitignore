@@ -68,4 +68,4 @@ Thumbs.db
 *.tgz
 
 # Custom project folders
-backup/
+backup_v2/

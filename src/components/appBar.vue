@@ -184,7 +184,12 @@ export default {
       console.log("Cambiar contraseña");
     },
     logout() {
-      this.$router.push("/login");
+      // Limpiar datos de sesión
+      sessionStorage.clear();
+      localStorage.clear();
+      
+      // Redirigir a la URL específica del login
+      window.location.href = "http://localhost:5173/#/login";
     },
   },
 };
