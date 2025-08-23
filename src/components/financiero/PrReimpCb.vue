@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row justify="center">
-     <v-col cols="12" md="11" lg="10" xl="11">
+      <v-col cols="12" md="11" lg="10" xl="11">
         <v-card elevation="8" rounded="xl" class="overflow-hidden">
           <v-card-title class="pa-6 bg-gradient-primary text-white">
             <div class="d-flex align-center w-100">
@@ -84,6 +84,7 @@
                   Consultar
                 </v-btn>
               </v-col>
+
             </v-row>
 
             <v-row class="mb-4" align="center">
@@ -141,7 +142,7 @@
               ><v-data-table
                 :headers="headers"
                 :items="detalle"
-                 item-value="consecutivo"
+                item-value="consecutivo"
                 :search="search"
                 item-key="consecutivo"
                 show-expand
@@ -149,7 +150,6 @@
                 class="elevation-0"
                 :sort-by="[{ key: 'consecutivo', order: 'desc' }]"
               >
-
                 <template v-slot:expanded-row="{ columns, item }">
                   <tr>
                     <td :colspan="columns.length" class="pl-4 py-4">
@@ -379,6 +379,36 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog 
+      v-model="showOverlay" 
+      persistent 
+      width="350"
+      overlay-opacity="0.7"
+    >
+      <v-card
+        class="pa-6 text-center"
+        elevation="12"
+        rounded="16"
+        color="rgba(0,0,0,0.9)"
+      >
+        <!-- Spinner -->
+        <div class="d-flex justify-center mb-4">
+          <div class="custom-spinner">
+            <div class="spinner-ring"></div>
+          </div>
+        </div>
+        
+        <!-- Texto -->
+        <div class="white--text">
+          <div class="text-h6 font-weight-bold mb-2">
+            {{ loaderOverlay }}
+          </div>
+          <div class="text-body-2" style="opacity: 0.8;">
+            Por favor espere...
+          </div>
+        </div>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -394,7 +424,6 @@
   background: rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   padding: 8px;
-  backdrop-filter: blur(10px);
 }
 
 /* Campos de entrada con estilo moderno */
@@ -402,21 +431,23 @@
   border-radius: 12px !important;
 }
 
-/* Botones con sombras suaves */
+/* ✅ BOTONES LIMPIOS SIN BACKDROP-FILTER */
 .v-btn {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: none !important; /* ✅ FORZAR NINGÚN BLUR */
 }
 
 .v-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  backdrop-filter: none !important; /* ✅ FORZAR NINGÚN BLUR EN HOVER */
 }
 
-/* Cards con efecto glass */
+/* ✅ CARDS LIMPIOS */
 .v-card {
-  backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none !important; /* ✅ QUITAR BACKDROP DE CARDS NORMALES */
 }
 
 /* Tabla con diseño limpio */
@@ -500,6 +531,82 @@
 .hover\:bg-grey-lighten-4:hover {
   background-color: rgb(245, 245, 245);
 }
+
+/* ✅ OVERLAY - SOLO APLICAR BLUR AL FONDO */
+.mi-overlay {
+  z-index: 9999 !important;
+  background-color: rgba(0, 0, 0, 0.7) !important; /* ✅ USAR SOLO COLOR */
+}
+
+.mi-overlay .v-overlay__content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+}
+
+/* ✅ CARD DEL OVERLAY */
+.mi-overlay .v-card {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: none !important; /* ✅ SIN BLUR EN CARD */
+}
+
+/* ✅ SPINNER PERSONALIZADO */
+.custom-spinner {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.spinner-ring {
+  width: 64px;
+  height: 64px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.white--text {
+  color: white !important;
+}
+
+/* ✅ ANIMACIÓN SIMPLE SIN BACKDROP-FILTER */
+.v-overlay--active {
+  animation: overlayFadeIn 0.3s ease-out;
+}
+
+/* ✅ UNA SOLA ANIMACIÓN SIN BACKDROP-FILTER */
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ✅ ASEGURAR QUE NINGÚN ELEMENTO TENGA BACKDROP-FILTER ACCIDENTAL */
+* {
+  backdrop-filter: none !important;
+}
+
+/* ✅ EXCEPCIÓN: SOLO EL OVERLAY PRINCIPAL PUEDE TENER EFECTO DE FONDO */
+.mi-overlay {
+  backdrop-filter: none !important; /* ✅ Removido por compatibilidad */
+}
 </style>
 
 <script>
@@ -529,17 +636,17 @@ export default {
       empresa: [],
       docc: [],
       item_sel: null,
+      loaderOverlay: false, // ✅ MANTENER ESTA para el overlay
       btnEnvio: {
         loader: false,
         loader_excel: false,
         disabled: false,
       },
-
       search: "",
       form: null,
       drawer: false,
       headers: [
-         { width: 1, key: 'data-table-expand', align: 'end' },
+        { width: 1, key: "data-table-expand", align: "end" },
         {
           title: "Consecutivo",
           align: "center",
@@ -570,10 +677,13 @@ export default {
         { title: "Ver Soportes", key: "bajar_sop", align: "center" },
       ],
       detalle: [],
+
+      // ✅ MANTENER ESTA para la tabla
       loader: {
         tabla_datos: false,
         tipoDocumento: false,
       },
+
       logoSrc:
         "https://server1ts.net/datos/image/clientes/" +
         parseFloat(sessionStorage.Sesion.substr(0, 15)) +
@@ -613,7 +723,7 @@ export default {
       }
 
       // Activar loader
-      this.btnEnvio.loader_excel = true;
+      this.loaderOverlay = "Generando archivo Excel..."; // ✅ CAMBIAR
 
       const _this = this;
       let tipo_documento = this.form.tipoDocumento.descrip_docc;
@@ -749,14 +859,14 @@ export default {
           });
       } catch (error) {
         console.error("Error procesando datos:", error);
-        this.btnEnvio.loader_excel = false;
+        this.loaderOverlay = false; // ✅ CAMBIAR
         this.send_error("Error al procesar datos: " + error.message);
       }
     },
 
     generarArchivoExcel(header, columnas, data, logo) {
       if (!window.excel || !window.excel._informe) {
-        this.btnEnvio.loader_excel = false;
+        this.loaderOverlay = false; // ✅ CAMBIAR
         this.send_error("Servicio de Excel no disponible");
         return;
       }
@@ -777,7 +887,7 @@ export default {
           }-${new Date().getTime()}`,
         })
         .then(() => {
-          this.btnEnvio.loader_excel = false;
+          this.loaderOverlay = false; // ✅ CAMBIAR
           this.$emit("snack", {
             color: "success",
             text: "Archivo Excel generado exitosamente",
@@ -785,7 +895,7 @@ export default {
           });
         })
         .catch((error) => {
-          this.btnEnvio.loader_excel = false;
+          this.loaderOverlay = false; // ✅ CAMBIAR
           console.error("Error generando Excel:", error);
           this.send_error("Error al generar archivo Excel: " + error.message);
         });
@@ -1197,6 +1307,7 @@ export default {
         });
     },
     generar_pdf(data) {
+      this.loaderOverlay = "Generando PDF..."; // ✅ CAMBIAR
       let tipo_documento = this.form.tipoDocumento.descrip_docc;
 
       data.tipo_documento = tipo_documento;
@@ -1235,16 +1346,20 @@ export default {
                 console.log("Impresión finalizada sin logo");
               });
             });
+        })
+        .finally(() => {
+          this.loaderOverlay = false; // ✅ CAMBIAR
         });
     },
 
     get_comprobantes() {
       this.detalle = [];
-      var tipoDocumento = this.form.tipoDocumento;
-      if (tipoDocumento) {
-        this.loader.tabla_datos = true;
-        var fecha = this.periodo_cargue.replace(/\-/g, "");
+      this.loaderOverlay = "Consultando comprobantes..."; // ✅ CAMBIAR
 
+      var tipoDocumento = this.form.tipoDocumento;
+
+      if (tipoDocumento) {
+        var fecha = this.periodo_cargue.replace(/\-/g, "");
         var datosEnvio =
           sessionStorage.Sesion +
           "|" +
@@ -1253,6 +1368,7 @@ export default {
           "|" +
           fecha +
           "|";
+
         post
           .postData({
             url: "Financiero/dlls/PrReimpcbJ.dll",
@@ -1260,7 +1376,8 @@ export default {
             method: "",
           })
           .then((data) => {
-            this.loader.tabla_datos = false;
+            this.loaderOverlay = false; // ✅ CAMBIAR
+
             data = data.map((el) => {
               el.consecutivo = el.consecutivo.replace(/\,/g, "");
               return el;
@@ -1270,12 +1387,13 @@ export default {
             this.detalle = data;
           })
           .catch((err) => {
-            this.loader.tabla_datos = false;
+            this.loaderOverlay = false; // ✅ CAMBIAR
             console.error(err);
             this.send_error("Error al consultar información de comprobantes");
           });
       } else {
         this.detalle = [];
+        this.loaderOverlay = false; // ✅ CAMBIAR
       }
     },
     format_docc: function (val) {
@@ -1299,6 +1417,7 @@ export default {
           this.send_error("Error al cargar Documento Contable");
         });
     },
+
     send_error(msj) {
       this.$emit("snack", {
         color: "error",
@@ -1306,6 +1425,11 @@ export default {
         estado: true,
       });
     },
+  },
+  computed: {
+    showOverlay() {
+      return !!this.loaderOverlay;
+    }
   },
 };
 </script>
