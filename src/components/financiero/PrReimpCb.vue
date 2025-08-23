@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row justify="center">
-      <v-col cols="12" md="10" lg="8">
+     <v-col cols="12" md="11" lg="10" xl="11">
         <v-card elevation="8" rounded="xl" class="overflow-hidden">
           <v-card-title class="pa-6 bg-gradient-primary text-white">
             <div class="d-flex align-center w-100">
@@ -137,78 +137,88 @@
               </v-col>
             </v-row>
 
-            <v-card variant="outlined" class="rounded-lg overflow-hidden">
-              <v-data-table
+            <v-card variant="outlined" class="rounded-lg overflow-hidden"
+              ><v-data-table
                 :headers="headers"
                 :items="detalle"
+                 item-value="consecutivo"
                 :search="search"
-                :single-expand="true"
                 item-key="consecutivo"
                 show-expand
                 :loading="loader.tabla_datos"
                 class="elevation-0"
                 :sort-by="[{ key: 'consecutivo', order: 'desc' }]"
               >
-                <template v-slot:expanded-item="{ headers, item }">
-                  <td :colspan="headers.length" class="pl-4 py-4">
-                    <v-card variant="flat" class="bg-grey-lighten-5 rounded-lg">
-                      <v-card-text>
-                        <v-table
-                          density="compact"
-                          class="rounded-lg overflow-hidden"
-                        >
-                          <thead class="bg-primary">
-                            <tr>
-                              <th class="text-white font-weight-bold">Item</th>
-                              <th class="text-white font-weight-bold">
-                                Cuenta
-                              </th>
-                              <th class="text-white font-weight-bold">Rut</th>
-                              <th class="text-white font-weight-bold">
-                                Documento
-                              </th>
-                              <th class="text-white font-weight-bold">
-                                C. Costo
-                              </th>
-                              <th
-                                class="text-white font-weight-bold text-right"
+
+                <template v-slot:expanded-row="{ columns, item }">
+                  <tr>
+                    <td :colspan="columns.length" class="pl-4 py-4">
+                      <v-card
+                        variant="flat"
+                        class="bg-grey-lighten-5 rounded-lg"
+                      >
+                        <v-card-text>
+                          <v-table
+                            density="compact"
+                            class="rounded-lg overflow-hidden"
+                          >
+                            <thead class="bg-primary">
+                              <tr>
+                                <th class="text-white font-weight-bold">
+                                  Item
+                                </th>
+                                <th class="text-white font-weight-bold">
+                                  Cuenta
+                                </th>
+                                <th class="text-white font-weight-bold">Rut</th>
+                                <th class="text-white font-weight-bold">
+                                  Documento
+                                </th>
+                                <th class="text-white font-weight-bold">
+                                  C. Costo
+                                </th>
+                                <th
+                                  class="text-white font-weight-bold text-right"
+                                >
+                                  Débito
+                                </th>
+                                <th
+                                  class="text-white font-weight-bold text-right"
+                                >
+                                  Crédito
+                                </th>
+                                <th class="text-white font-weight-bold">
+                                  Detalle
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr
+                                v-for="(row, index) in item.registros"
+                                :key="`${item.consecutivo}-${index}`"
+                                class="hover:bg-grey-lighten-4"
                               >
-                                Débito
-                              </th>
-                              <th
-                                class="text-white font-weight-bold text-right"
-                              >
-                                Crédito
-                              </th>
-                              <th class="text-white font-weight-bold">
-                                Detalle
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr
-                              v-for="row in item.registros"
-                              :key="row.item"
-                              class="hover:bg-grey-lighten-4"
-                            >
-                              <td class="font-weight-medium">{{ row.item }}</td>
-                              <td>{{ row.cuenta }}</td>
-                              <td>{{ row.rut }}</td>
-                              <td>{{ row.nroext }}</td>
-                              <td>{{ row.ccosto }}</td>
-                              <td class="text-right font-weight-medium">
-                                {{ row.debito }}
-                              </td>
-                              <td class="text-right font-weight-medium">
-                                {{ row.credito }}
-                              </td>
-                              <td>{{ row.detalle }}</td>
-                            </tr>
-                          </tbody>
-                        </v-table>
-                      </v-card-text>
-                    </v-card>
-                  </td>
+                                <td class="font-weight-medium">
+                                  {{ row.item }}
+                                </td>
+                                <td>{{ row.cuenta }}</td>
+                                <td>{{ row.rut }}</td>
+                                <td>{{ row.nroext }}</td>
+                                <td>{{ row.ccosto }}</td>
+                                <td class="text-right font-weight-medium">
+                                  {{ row.debito }}
+                                </td>
+                                <td class="text-right font-weight-medium">
+                                  {{ row.credito }}
+                                </td>
+                                <td>{{ row.detalle }}</td>
+                              </tr>
+                            </tbody>
+                          </v-table>
+                        </v-card-text>
+                      </v-card>
+                    </td>
+                  </tr>
                 </template>
 
                 <template v-slot:item.estado="{ item }">
@@ -247,25 +257,6 @@
                   </v-tooltip>
                 </template>
 
-                <template v-slot:item.anular_doc="{ item }">
-                  <v-tooltip location="top">
-                    <template v-slot:activator="{ props }">
-                      <v-btn
-                        @click="anular_doc(item)"
-                        color="warning"
-                        variant="text"
-                        size="small"
-                        icon
-                        v-bind="props"
-                        :disabled="item.estado == '1'"
-                      >
-                        <v-icon size="18">mdi-cancel</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>Anular Documento</span>
-                  </v-tooltip>
-                </template>
-
                 <template v-slot:item.imprimir_exec="{ item }">
                   <v-tooltip location="top">
                     <template v-slot:activator="{ props }">
@@ -280,7 +271,42 @@
                         <v-icon size="18">mdi-file-excel</v-icon>
                       </v-btn>
                     </template>
-                    <span>Exportar a Excel</span>
+                    <span>Generar comprobante en Excel</span>
+                  </v-tooltip>
+                </template>
+                <template v-slot:item.subir_sop="{ item }">
+                  <v-tooltip location="top">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        @click="subir_soportes(item)"
+                        color="purple"
+                        variant="text"
+                        size="small"
+                        icon
+                        v-bind="props"
+                      >
+                        <v-icon>mdi-file-upload-outline</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Subir soportes</span>
+                  </v-tooltip>
+                </template>
+
+                <template v-slot:item.bajar_sop="{ item }">
+                  <v-tooltip location="top">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        @click="descargar_soportes(item)"
+                        color="orange"
+                        variant="text"
+                        size="small"
+                        icon
+                        v-bind="props"
+                      >
+                        <v-icon>mdi-download-circle-outline</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Descargar soportes</span>
                   </v-tooltip>
                 </template>
               </v-data-table>
@@ -315,6 +341,44 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-dialog
+      v-model="dialogo_archivo.estado"
+      width="600"
+      max-width="90%"
+      persistent
+    >
+      <v-card
+        :loading="dialogo_archivo.loader"
+        :disabled="dialogo_archivo.loader"
+      >
+        <v-card-title>Adjuntar documento</v-card-title>
+        <v-card-text>
+          <v-file-input
+            label="Buscar PDF"
+            outlined
+            chips
+            counter
+            color="blue darken-1"
+            hide-details
+            :show-size="1000"
+            accept="application/pdf"
+            v-model="dialogo_archivo.model"
+            id="archivo_pdf"
+          ></v-file-input>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="red" text @click="cancelar_subida">Cancelar</v-btn>
+          <v-btn
+            depressed
+            color="green darken-2"
+            class="white--text px-12 mx-5"
+            @click="up_file"
+            >Aceptar</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -475,40 +539,35 @@ export default {
       form: null,
       drawer: false,
       headers: [
+         { width: 1, key: 'data-table-expand', align: 'end' },
         {
-          text: "",
-          value: "data-table-expand",
-          width: "5%",
+          title: "Consecutivo",
           align: "center",
-        },
-        {
-          text: "Consecutivo",
-          align: "center",
-          value: "consecutivo",
+          key: "consecutivo",
           width: "15%",
         },
         {
-          text: "Descripción",
+          title: "Descripción",
           align: "left",
-          value: "descripc",
+          key: "descripc",
           width: "45%",
         },
         {
-          text: "Fecha",
+          title: "Fecha",
           align: "left",
-          value: "fecha",
+          key: "fecha",
           width: "20%",
         },
         {
-          text: "Estado",
+          title: "Estado",
           align: "left",
-          value: "estado",
+          key: "estado",
           width: "20%",
         },
-        { text: "Imprimir Pdf", value: "imprimir_pdf", align: "center" },
-        { text: "Imprimir Excel", value: "imprimir_exec", align: "center" },
-        { text: "Subir Soportes", value: "subir_sop", align: "center" },
-        { text: "Ver Soportes", value: "bajar_sop", align: "center" },
+        { title: "Imprimir Pdf", key: "imprimir_pdf", align: "center" },
+        { title: "Imprimir Excel", key: "imprimir_exec", align: "center" },
+        { title: "Subir Soportes", key: "subir_sop", align: "center" },
+        { title: "Ver Soportes", key: "bajar_sop", align: "center" },
       ],
       detalle: [],
       loader: {
@@ -565,7 +624,7 @@ export default {
         this.detalle.forEach((el) => {
           // Crear una copia para no mutar el original
           const registrosCopia = [...el.registros];
-          
+
           // Eliminar último elemento (totales) si existe
           if (registrosCopia.length > 0) {
             registrosCopia.pop();
@@ -580,11 +639,15 @@ export default {
 
             // Procesar valores de débito y crédito
             if (item.debito && item.debito !== "") {
-              debito = parseFloat(item.debito.replace(/\s/g, "").replace(/,/g, "")) || 0;
+              debito =
+                parseFloat(item.debito.replace(/\s/g, "").replace(/,/g, "")) ||
+                0;
             }
-            
+
             if (item.credito && item.credito !== "") {
-              credito = parseFloat(item.credito.replace(/\s/g, "").replace(/,/g, "")) || 0;
+              credito =
+                parseFloat(item.credito.replace(/\s/g, "").replace(/,/g, "")) ||
+                0;
             }
 
             total_debito += debito;
@@ -638,15 +701,27 @@ export default {
           { title: "RUT", value: "rut" },
           { title: "Documento", value: "nroext" },
           { title: "Centro de costos", value: "ccosto" },
-          { title: "Débito", value: "debito", format: "money", totalsRowFunction: "sum" },
-          { title: "Crédito", value: "credito", format: "money", totalsRowFunction: "sum" },
+          {
+            title: "Débito",
+            value: "debito",
+            format: "money",
+            totalsRowFunction: "sum",
+          },
+          {
+            title: "Crédito",
+            value: "credito",
+            format: "money",
+            totalsRowFunction: "sum",
+          },
           { title: "Detalle", value: "detalle" },
         ];
 
         // Configuración del header
         const header = [
           {
-            text: _this.empresa.descrip_empr ? _this.empresa.descrip_empr.trim() : "EMPRESA",
+            text: _this.empresa.descrip_empr
+              ? _this.empresa.descrip_empr.trim()
+              : "EMPRESA",
             bold: true,
             size: 16,
           },
@@ -654,7 +729,8 @@ export default {
           tipo_documento.toUpperCase(),
           "Período: " + this.periodo_cargue,
           "Total de comprobantes: " + this.detalle.length,
-          "Fecha de generación: " + this.$moment().format("DD/MM/YYYY HH:mm:ss"),
+          "Fecha de generación: " +
+            this.$moment().format("DD/MM/YYYY HH:mm:ss"),
         ];
 
         // CAMBIO PRINCIPAL: Usar getImageBase64 en lugar de import dinámico
@@ -671,7 +747,6 @@ export default {
             // Generar sin logo
             this.generarArchivoExcel(header, columnas, data, null);
           });
-
       } catch (error) {
         console.error("Error procesando datos:", error);
         this.btnEnvio.loader_excel = false;
@@ -686,31 +761,34 @@ export default {
         return;
       }
 
-      window.excel._informe({
-        sheetName: "Comprobantes contables",
-        header: header,
-        logo: logo,
-        tabla: {
-          columnas: columnas,
-          totalsRow: true,
-          data: data,
-          theme: "TableStyleMedium2",
-        },
-        archivo: `Reporte-Comprobantes-${this.periodo_cargue}-${new Date().getTime()}`,
-      })
-      .then(() => {
-        this.btnEnvio.loader_excel = false;
-        this.$emit("snack", {
-          color: "success",
-          text: "Archivo Excel generado exitosamente",
-          estado: true,
+      window.excel
+        ._informe({
+          sheetName: "Comprobantes contables",
+          header: header,
+          logo: logo,
+          tabla: {
+            columnas: columnas,
+            totalsRow: true,
+            data: data,
+            theme: "TableStyleMedium2",
+          },
+          archivo: `Reporte-Comprobantes-${
+            this.periodo_cargue
+          }-${new Date().getTime()}`,
+        })
+        .then(() => {
+          this.btnEnvio.loader_excel = false;
+          this.$emit("snack", {
+            color: "success",
+            text: "Archivo Excel generado exitosamente",
+            estado: true,
+          });
+        })
+        .catch((error) => {
+          this.btnEnvio.loader_excel = false;
+          console.error("Error generando Excel:", error);
+          this.send_error("Error al generar archivo Excel: " + error.message);
         });
-      })
-      .catch((error) => {
-        this.btnEnvio.loader_excel = false;
-        console.error("Error generando Excel:", error);
-        this.send_error("Error al generar archivo Excel: " + error.message);
-      });
     },
 
     generar_excel_individual(item) {
@@ -734,8 +812,18 @@ export default {
         { title: "RUT", value: "rut" },
         { title: "Documento", value: "nroext" },
         { title: "Centro de costos", value: "ccosto" },
-        { title: "Débito", value: "debito", format: "money", totalsRowFunction: "sum" },
-        { title: "Crédito", value: "credito", format: "money", totalsRowFunction: "sum" },
+        {
+          title: "Débito",
+          value: "debito",
+          format: "money",
+          totalsRowFunction: "sum",
+        },
+        {
+          title: "Crédito",
+          value: "credito",
+          format: "money",
+          totalsRowFunction: "sum",
+        },
         { title: "Detalle", value: "detalle" },
       ];
 
@@ -747,8 +835,14 @@ export default {
           rut: el.rut.trim(),
           nroext: el.nroext.trim(),
           ccosto: el.ccosto.trim(),
-          debito: el.debito === "" ? 0 : parseFloat(el.debito.replace(/\ /g, "").replace(/\,/g, "")),
-          credito: el.credito === "" ? 0 : parseFloat(el.credito.replace(/\ /g, "").replace(/\,/g, "")),
+          debito:
+            el.debito === ""
+              ? 0
+              : parseFloat(el.debito.replace(/\ /g, "").replace(/\,/g, "")),
+          credito:
+            el.credito === ""
+              ? 0
+              : parseFloat(el.credito.replace(/\ /g, "").replace(/\,/g, "")),
           detalle: el.detalle.trim(),
         });
       });
@@ -769,41 +863,45 @@ export default {
       // CAMBIO: Usar getImageBase64 en lugar de import dinámico
       const empresaId = parseFloat(sessionStorage.Sesion.substr(0, 15));
       const logo_url = `http://www.imagenes.titansolucionescloud.ovh/clientes/image-proxy.php?image=${empresaId}.png`;
-      
+
       this.getImageBase64(logo_url)
         .then((logo) => {
           // CAMBIO: Usar window.excel en lugar de this.excel
-          window.excel._informe({
-            sheetName: "Comprobantes contables",
-            header: header,
-            logo,
-            tabla: {
-              columnas: columnas,
-              totalsRow: true,
-              data: data_parse,
-              theme: "TableStyleMedium2",
-            },
-            archivo: `Reimp-Combroantes-${new Date().getTime()}`,
-          }).then(() => {
-            console.log("Impresion terminada");
-          });
+          window.excel
+            ._informe({
+              sheetName: "Comprobantes contables",
+              header: header,
+              logo,
+              tabla: {
+                columnas: columnas,
+                totalsRow: true,
+                data: data_parse,
+                theme: "TableStyleMedium2",
+              },
+              archivo: `Reimp-Comprobantes-${new Date().getTime()}`,
+            })
+            .then(() => {
+              console.log("Impresion terminada");
+            });
         })
         .catch(() => {
           // Sin logo
-          window.excel._informe({
-            sheetName: "Comprobantes contables",
-            header: header,
-            logo: null,
-            tabla: {
-              columnas: columnas,
-              totalsRow: true,
-              data: data_parse,
-              theme: "TableStyleMedium2",
-            },
-            archivo: `Reimp-Combroantes-${new Date().getTime()}`,
-          }).then(() => {
-            console.log("Impresion terminada sin logo");
-          });
+          window.excel
+            ._informe({
+              sheetName: "Comprobantes contables",
+              header: header,
+              logo: null,
+              tabla: {
+                columnas: columnas,
+                totalsRow: true,
+                data: data_parse,
+                theme: "TableStyleMedium2",
+              },
+              archivo: `Reimp-Comprobantes-${new Date().getTime()}`,
+            })
+            .then(() => {
+              console.log("Impresion terminada sin logo");
+            });
         });
     },
 
@@ -898,43 +996,7 @@ export default {
         }
       });
     },
-    up_file_old() {
-      var file = this.dialogo_archivo.model;
-      if (!file) {
-        this.send_error("Debes adjuntar un documento");
-      } else {
-        this.dialogo_archivo.loader = true;
-        var ruta = `${this.dialogo_archivo.ruta_pdf}`;
-        var archivo = new FormData();
-        archivo.append("pdf", file);
-        archivo.append("nombre_pdf", ruta);
 
-        fetch("https://server100ts.net/up.pdf.php", {
-          method: "POST",
-          body: archivo,
-        })
-          .then((res) => res.json())
-          .catch((err) => {
-            this.dialogo_archivo.loader = false;
-            this.send_error("Ha ocurrido un error subiendo el PDF");
-          })
-          .then((res) => {
-            this.dialogo_archivo.loader = false;
-            if (res.code == 0) {
-              this.cancelar_subida();
-
-              this.$emit("snack", {
-                color: "success",
-                text: res.msj,
-                estado: true,
-              });
-            } else {
-              this.cancelar_subida();
-              this.send_error(res.msj);
-            }
-          });
-      }
-    },
     async up_file() {
       var file = this.dialogo_archivo.model;
       let digito = this.empresa.id_empr.substr(14, 15);
@@ -1175,6 +1237,7 @@ export default {
             });
         });
     },
+
     get_comprobantes() {
       this.detalle = [];
       var tipoDocumento = this.form.tipoDocumento;
