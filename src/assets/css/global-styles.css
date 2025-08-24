@@ -1,0 +1,253 @@
+/* Gradiente moderno para el header */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 50%, #0d47a1 100%) !important;
+  box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3) !important;
+}
+
+/* Contenedor de icono mejorado */
+.icon-wrapper {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 8px !important;
+}
+
+/* Campos de entrada con estilo moderno */
+.v-field--outlined {
+  border-radius: 12px !important;
+}
+
+.v-field--outlined .v-field__outline {
+  border-radius: 12px !important;
+}
+
+/* Botones limpios */
+.v-btn {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border-radius: 8px !important;
+}
+
+.v-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Cards limpios */
+.v-card {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+}
+
+/* Tabla con diseño limpio */
+.v-data-table {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.v-data-table__wrapper {
+  border-radius: 12px !important;
+}
+
+/* Headers de tabla modernos */
+.v-data-table .v-data-table-header {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%) !important;
+}
+
+.v-data-table .v-data-table-header th {
+  color: white !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Dividers modernos */
+.v-divider {
+  opacity: 0.3 !important;
+}
+
+/* Animaciones suaves */
+.v-card-actions {
+  transition: all 0.3s ease !important;
+}
+
+/* Mejoras de tipografía */
+.text-h4 {
+  letter-spacing: -0.02em !important;
+}
+
+.text-h6 {
+  letter-spacing: -0.01em !important;
+}
+
+/* Espaciado consistente */
+.gap-3 {
+  gap: 12px !important;
+}
+
+/* Efectos hover para iconos */
+.v-icon {
+  transition: all 0.2s ease !important;
+}
+
+.v-btn:hover .v-icon {
+  transform: scale(1.1) !important;
+}
+
+/* Mejoras de accesibilidad */
+.v-btn:focus {
+  outline: 2px solid #1976d2 !important;
+  outline-offset: 2px !important;
+}
+
+/* Estado de loading mejorado */
+.v-btn--loading {
+  opacity: 0.8 !important;
+}
+
+/* Chips con estilo moderno */
+.v-chip {
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  border-radius: 16px !important;
+}
+
+/* Hover effects para filas de tabla */
+.v-data-table tbody tr:hover {
+  background-color: rgba(25, 118, 210, 0.04) !important;
+}
+
+/* Hover effects específicos */
+.hover\:bg-grey-lighten-4:hover,
+.v-data-table tbody tr.hover\:bg-grey-lighten-4:hover {
+  background-color: rgb(245, 245, 245) !important;
+}
+
+/* Autocomplete y select modernos */
+.v-autocomplete .v-field,
+.v-select .v-field {
+  border-radius: 12px !important;
+}
+
+/* Text fields modernos */
+.v-text-field .v-field {
+  border-radius: 12px !important;
+}
+
+/* Tooltips mejorados */
+.v-tooltip .v-overlay__content {
+  background: rgba(0, 0, 0, 0.9) !important;
+  border-radius: 8px !important;
+  font-size: 0.875rem !important;
+}
+
+/* Dialogs modernos */
+.v-dialog .v-card {
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Estados específicos de Vuetify */
+.v-btn--variant-elevated {
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12) !important;
+}
+
+.v-btn--variant-elevated:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.v-btn--variant-outlined {
+  border-width: 2px !important;
+}
+
+.v-btn--variant-text:hover {
+  background-color: rgba(25, 118, 210, 0.08) !important;
+}
+
+/* Mejorar contraste en elementos de formulario */
+.v-field--focused .v-field__outline {
+  border-color: #1976d2 !important;
+  border-width: 2px !important;
+}
+
+.v-field--error .v-field__outline {
+  border-color: #f44336 !important;
+}
+
+/* Spinner personalizado global */
+.custom-spinner {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.spinner-ring {
+  width: 64px;
+  height: 64px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.white--text {
+  color: white !important;
+}
+
+/* Animaciones de fade */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Responsive design mejorado */
+@media (max-width: 960px) {
+  .v-card-actions .v-col {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .gap-3 {
+    gap: 8px !important;
+  }
+
+  .v-btn {
+    width: 100% !important;
+    margin-bottom: 8px !important;
+  }
+
+  .v-card-title {
+    padding: 16px !important;
+  }
+
+  .text-h4 {
+    font-size: 1.5rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .v-card {
+    margin: 8px !important;
+    border-radius: 12px !important;
+  }
+
+  .v-card-text {
+    padding: 16px !important;
+  }
+
+  .bg-gradient-primary {
+    padding: 16px !important;
+  }
+}

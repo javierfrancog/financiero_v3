@@ -73,9 +73,6 @@ class _impresion_excel {
     var columnas = this.content.tabla.columnas;
     var formato_datos = [];
 
-    // Se añade format String, para omitir conversion numerica (en caso de que sean columnas
-    // con datos numericos y alfanumericos a la vez) David.M 21/07/2020
-    // Se agrega formato automatico para fechas David.M 16/07/2020
     datos.forEach((row, index) => {
       formato_datos.push([]);
       columnas.forEach((columna) => {
@@ -122,30 +119,22 @@ class _impresion_excel {
     var $this = this;
     var tabla = this.tabla_render;
     let rango = tabla.table.tableRef.split(":");
-    let limite_ini = rango[0].substr(1); // Row inicio de tabla
-    // Row final de tabla
+    let limite_ini = rango[0].substr(1);
     let limite_fin = null;
     columnas_final_2 > 26
       ? (limite_fin = rango[1].substr(2))
       : (limite_fin = rango[1].substr(1));
 
-    // David.M 17/07/2020
-    // Se agrega escala, orientacion y encabezado repetible en cada pagina
-    // Se elimina printArea para que sea automatico.
-
     this.worksheet.pageSetup.scale = this.content.scale;
     this.worksheet.pageSetup.orientation = this.content.orientation;
     this.worksheet.pageSetup.printTitlesRow = `1:${final_encabezado2 + 2}`;
 
-    // Ajusta la altura (height) de cada fila
     var heightRow = this.content.tabla.heightRow || false;
     this.worksheet._rows.forEach((row) => {
       if (row._number >= limite_ini && row._number <= limite_fin)
         row.height = heightRow || 20;
     });
 
-    // Ajusta todas las celdas al tamaño del texto
-    // Asigna formato (money) a las columnas seleccionadas
     this.worksheet.columns.forEach((column) => {
       let width = 0;
       let id_columna = column._number;
@@ -156,7 +145,6 @@ class _impresion_excel {
         let columna = null;
         let parent_columna = null;
         var col2 = cell._address.substring(1, 2);
-        // Condicion evaluando si hay mas de 26 columnas David.M
         if (isNaN(parseFloat(col2))) {
           coord = parseInt(cell._address.substr(2));
           columna = String.fromCharCode(96 + id_columna).toUpperCase();
@@ -273,10 +261,18 @@ class _impresion_excel {
   }
 }
 
+// ✅ FUNCIÓN PRINCIPAL QUE ESPERA EL COMPONENTE
 var _informe = (params) => {
   return new Promise(function(resolve, reject) {
-    let config = new _impresion_excel(params);
-    config.imprimir().then(resolve);
+    try {
+      let config = new _impresion_excel(params);
+      config.imprimir().then(() => {
+        resolve();
+      }).catch(reject);
+    } catch (error) {
+      console.error('❌ Error en _informe:', error);
+      reject(error);
+    }
   });
 };
 
@@ -290,5 +286,19 @@ var formatos_excel = {
   },
 };
 
+// ✅ ASIGNAR A WINDOW (ESTO ES LO QUE FALTABA)
+if (typeof window !== 'undefined') {
+  window.excel = {
+    _informe
+  };
+} else {
+  console.warn('⚠️ window no disponible (entorno servidor)');
+}
+
 export { formatos_excel, _informe };
+
+// ✅ EXPORT DEFAULT PARA COMPATIBILIDAD
+export default {
+  _informe
+};
 
