@@ -17,16 +17,6 @@
                 </p>
               </div>
               <v-spacer></v-spacer>
-              <v-chip
-                variant="elevated"
-                color="white"
-                text-color="primary"
-                size="small"
-                class="font-weight-bold"
-              >
-                <v-icon start size="16">mdi-file-check</v-icon>
-                Comprobantes
-              </v-chip>
             </div>
           </v-card-title>
           <v-card-text class="pa-6">
@@ -44,7 +34,7 @@
             </v-row>
 
             <v-row class="mb-4">
-              <v-col cols="12" md="4">
+              <v-col cols="12" md="3">
                 <app-date-picker
                   placeholder="Seleccionar Período"
                   :minimum-view="'month'"
@@ -70,7 +60,7 @@
                   class="rounded-lg"
                 ></v-autocomplete>
               </v-col>
-              <v-col cols="12" md="3" class="d-flex align-end">
+              <v-col cols="12" md="3" class="mb-3 d-flex">
                 <v-btn
                   color="primary"
                   variant="elevated"
@@ -84,21 +74,10 @@
                   Consultar
                 </v-btn>
               </v-col>
-
             </v-row>
 
-            <v-row class="mb-4" align="center">
-              <v-col>
-                <div class="d-flex align-center">
-                  <v-icon color="primary" class="me-3" size="20"
-                    >mdi-format-list-bulleted</v-icon
-                  >
-                  <h3 class="text-h6 font-weight-medium text-primary mb-0">
-                    Lista de Comprobantes
-                  </h3>
-                </div>
-              </v-col>
-              <v-col class="d-flex justify-end gap-3">
+            <v-row class="mt-0">
+              <v-col class="d-flex gap-3">
                 <v-btn
                   color="success"
                   variant="elevated"
@@ -112,14 +91,6 @@
                   <v-icon start size="18">mdi-file-excel</v-icon>
                   Exportar Excel
                 </v-btn>
-                <v-chip
-                  :color="detalle.length > 0 ? 'success' : 'info'"
-                  variant="elevated"
-                  size="small"
-                >
-                  <v-icon start size="16">mdi-counter</v-icon>
-                  {{ detalle.length }} Registros
-                </v-chip>
               </v-col>
             </v-row>
 
@@ -322,20 +293,6 @@
                   Total de comprobantes: <strong>{{ detalle.length }}</strong>
                 </div>
               </v-col>
-              <v-col class="d-flex justify-end">
-                <v-btn
-                  color="primary"
-                  variant="elevated"
-                  size="large"
-                  rounded="lg"
-                  @click="get_comprobantes()"
-                  :loading="loader.tabla_datos"
-                  class="px-8"
-                >
-                  <v-icon start size="18">mdi-refresh</v-icon>
-                  Actualizar
-                </v-btn>
-              </v-col>
             </v-row>
           </v-card-actions>
         </v-card>
@@ -368,20 +325,35 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="red" text @click="cancelar_subida">Cancelar</v-btn>
-          <v-btn
-            depressed
-            color="green darken-2"
-            class="white--text px-12 mx-5"
-            @click="up_file"
-            >Aceptar</v-btn
-          >
+          <v-col cols="6" class="d-flex">
+            <v-btn
+              color="red"
+              variant="elevated"
+              rounded="lg"
+              @click="cancelar_subida()"
+              class="px-6 w-100"
+              depressed
+              >Cancelar</v-btn
+            >
+          </v-col>
+
+          <v-col cols="6" class="d-flex">
+            <v-btn
+              color="primary"
+              variant="elevated"
+              rounded="lg"
+              @click="up_file()"
+              class="px-6 w-100"
+              depressed
+              >Aceptar</v-btn
+            >
+          </v-col>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog 
-      v-model="showOverlay" 
-      persistent 
+    <v-dialog
+      v-model="showOverlay"
+      persistent
       width="350"
       overlay-opacity="0.7"
     >
@@ -397,13 +369,13 @@
             <div class="spinner-ring"></div>
           </div>
         </div>
-        
+
         <!-- Texto -->
         <div class="white--text">
           <div class="text-h6 font-weight-bold mb-2">
             {{ loaderOverlay }}
           </div>
-          <div class="text-body-2" style="opacity: 0.8;">
+          <div class="text-body-2" style="opacity: 0.8">
             Por favor espere...
           </div>
         </div>
@@ -573,8 +545,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .white--text {
@@ -1160,6 +1136,7 @@ export default {
       data.append("llavedoc", llavedoc);
       data.append("fechadoc", fechadoc);
       data.append("idrut", idrut);
+      this.loaderOverlay = "Subiendo archivo...";
 
       let response = await fetch(
         "https://server1ts.net//financiero/inc/soporte.contab.php",
@@ -1171,6 +1148,7 @@ export default {
       this.card_estado = false;
       this.cancelar_subida();
       this.get_comprobantes();
+      this.loaderOverlay = false;
 
       this.$emit("snack", {
         color: "success",
@@ -1178,77 +1156,7 @@ export default {
         estado: true,
       });
     },
-    async up_file_sep() {
-      var file = this.dialogo_archivo.model;
-      let digito = this.empresa.id_empr.substr(14, 15);
-      let idempresa = parseFloat(this.empresa.id_empr);
-      let idjson = "cargue_" + digito + ".json";
-      let session = sessionStorage.Sesion;
-      let agencia = this.item_sel.agencia;
-      let fechadoc = this.item_sel.fechadoc;
-      let periodo = fechadoc.substr(0, 6);
-      let coddoc = this.item_sel.coddoc;
-      let empresa = this.empresa.descrip_empr.trim();
-      let iddrive = this.empresa.iddrive_rep.trim();
-      let llavedoc = agencia + this.item_sel.coddoc;
-      // iddrive = "1V9QwiShda842F6U5UHvh4tOPRqnMsqsq";
-      let cargue_pdf = file.name;
-      let consec = parseFloat(this.item_sel.consecutivo.trim());
-      let clasif = 1;
-      let consecpte = 0;
-      let agcpte = 0;
-      let idrut = 0;
-      let codigo = "";
-      let tipodoc = "02";
-      let nombre_pdf =
-        idempresa +
-        "_CONT_" +
-        periodo +
-        "_" +
-        agencia +
-        coddoc +
-        "_" +
-        consec +
-        "_" +
-        clasif +
-        ".pdf";
 
-      let data = new FormData();
-      data.append("empresa", empresa);
-      data.append("session", session);
-      data.append("cargue_pdf", cargue_pdf);
-      data.append("nombre_pdf", nombre_pdf);
-      data.append("tipodoc", tipodoc);
-      data.append("clasif", clasif);
-      data.append("consecutivo", consec);
-      data.append("file", file);
-      data.append("agencia", agencia);
-      data.append("codigo", codigo);
-      data.append("consecpte", consecpte);
-      data.append("agcpte", agcpte);
-      data.append("iddrive", iddrive);
-      data.append("idjson", idjson);
-      data.append("llavedoc", llavedoc);
-      data.append("fechadoc", fechadoc);
-      data.append("idrut", idrut);
-
-      let response = await fetch(
-        "https://server1ts.net//financiero/inc/soporte.contab.php",
-        {
-          method: "POST",
-          body: data,
-        }
-      ).then((res) => res.json());
-      this.card_estado = false;
-      this.cancelar_subida();
-      this.get_comprobantes();
-
-      this.$emit("snack", {
-        color: "success",
-        text: "Soporte Guardado Correctamente",
-        estado: true,
-      });
-    },
     cancelar_subida() {
       this.dialogo_archivo.estado = false;
       this.dialogo_archivo.ruta_pdf = null;
@@ -1429,7 +1337,7 @@ export default {
   computed: {
     showOverlay() {
       return !!this.loaderOverlay;
-    }
+    },
   },
 };
 </script>
